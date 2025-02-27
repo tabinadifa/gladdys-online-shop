@@ -31,6 +31,10 @@
         <input type="number" class="form-control" id="harga_produk" name="harga_produk" value="{{ $product->harga_produk }}" required>
     </div>
     <div class="mb-3">
+        <label for="diskon" class="form-label">Diskon (0 - 1, contoh: 0.1 untuk 10%)</label>
+        <input type="number" step="0.01" class="form-control" id="diskon" name="diskon" value="{{ $product->diskon }}">
+    </div>
+    <div class="mb-3">
         <label for="gambar_produk" class="form-label">Gambar Produk</label>
         @if($product->gambar_produk)
             <p>Gambar saat ini: <img src="{{ asset($product->gambar_produk) }}" alt="Gambar Produk" style="width: 100px; height: 100px; object-fit: cover; border-radius: 4px;"></p>

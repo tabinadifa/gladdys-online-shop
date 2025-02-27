@@ -22,7 +22,7 @@ class CartController extends Controller
                 'id_produk' => $product->id_produk,
                 'nama_produk' => $product->nama_produk,
                 'berat_produk' => $product->berat_produk, // Pastikan ini diambil dari database
-                'harga_produk' => $product->harga_produk,
+                'harga_final' => $product->harga_final,
                 'gambar_produk' => $product->gambar_produk,
                 'jumlah' => 1,
             ];

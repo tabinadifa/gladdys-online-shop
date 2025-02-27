@@ -21,14 +21,14 @@
             @php $total = 0; @endphp
             @foreach ($cart as $id => $item)
             @php 
-                $subtotal = $item['harga_produk'] * $item['jumlah']; 
+                $subtotal = $item['harga_final'] * $item['jumlah']; 
                 $total += $subtotal;
             @endphp
             <div class="flex items-center border border-gray- 300 p-4 rounded">
                 <img src="{{ $item['gambar_produk'] }}" alt="{{ $item['nama_produk'] }}" class="w-20 h-20 mr-4">
                 <div class="flex-grow">
                     <h2 class="text-lg font-semibold">{{ $item['nama_produk'] }}</h2>
-                    <p>Harga: Rp {{ number_format($item['harga_produk'], 0, ',', '.') }}</p>
+                    <p>Harga: Rp {{ number_format($item['harga_final'], 0, ',', '.') }}</p>
                     <p>Jumlah: {{ $item['jumlah'] }}</p>
                     <p>Subtotal: Rp {{ number_format($subtotal, 0, ',', '.') }}</p>
                     <form action="{{ route('cart.update', $id) }}" method="POST">

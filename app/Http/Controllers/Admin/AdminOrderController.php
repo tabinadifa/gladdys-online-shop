@@ -56,7 +56,7 @@ class AdminOrderController extends Controller
     {
             // Validasi hanya status yang dapat diubah
     $validated = $request->validate([
-        'status' => 'required|in:rejected,pending,process,delivered',
+        'status' => 'required|in:cancelled,pending,process,delivered',
     ]);
 
     // Update status pada order

@@ -107,7 +107,7 @@ class CheckoutController extends Controller
         // Hitung total harga produk
         $totalProductPrice = 0;
         foreach ($cart as $item) {
-            $totalProductPrice += $item['harga_produk'] * $item['jumlah'];
+            $totalProductPrice += $item['harga_final'] * $item['jumlah'];
         }
 
         return view('checkout.form', compact('results', 'totalProductPrice', 'payment'));
@@ -135,7 +135,7 @@ class CheckoutController extends Controller
 
     $totalProductPrice = 0;
     foreach ($cart as $item) {
-        $totalProductPrice += $item['harga_produk'] * $item['jumlah'];
+        $totalProductPrice += $item['harga_final'] * $item['jumlah'];
     }
 
     $shippingCost = (float) $request->shipping_method;
@@ -144,7 +144,7 @@ class CheckoutController extends Controller
     if ($request->hasFile('payment_method')) {
         $paymentMethod = $request->file('payment_method');
         $paymentPath = 'dashboard-template/payment_proofs/' . uniqid() . '.' . $paymentMethod->getClientOriginalExtension();
-        $paymentMethod->move(public_path('dashboard-template/payment_proofs'), basename($paymentPath));
+        $paymentMethod->move(base_path('dashboard-template/payment_proofs'), basename($paymentPath));
     } else {
         abort(400, 'Bukti pembayaran wajib diunggah.');
     }

@@ -114,7 +114,7 @@
                     @endif
 
                     <h3 class="mt-2 text-base font-medium text-gray-900">{{ $row->nama_produk }}</h3> 
-                    <p class="mt-1 text-sm text-gray-700">Rp {{ number_format($row->harga_produk, 0, ',', '.') }}</p>
+                    <p class="mt-1 text-sm text-gray-700">Rp {{ number_format($row->harga_final, 0, ',', '.') }}</p>
 
                     <form action="{{ route('cart.add', $row->id_produk) }}" method="POST" class="mt-3">
                       @csrf

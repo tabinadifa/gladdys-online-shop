@@ -1,6 +1,6 @@
 <x-layout-admin>
 <a href="{{ route('contact.index') }}" class="btn btn-secondary d-inline-block" style="width: 10%;">Back</a>
-<form action="{{ route('contact.update') }}" method="POST">
+<form action="{{ route('contact.update', $contact) }}" method="POST">
     @csrf
   <div class="mb-3">
     <label for="phone" class="form-label">No. WhatsApp (link)</label>

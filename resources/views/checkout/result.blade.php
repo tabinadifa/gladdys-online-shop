@@ -21,7 +21,7 @@
                                         <td class="border border-gray-300 px-4 py-2 text-sm text-gray-800">{{ $courier['name'] }}</td>
                                         <td class="border border-gray-300 px-4 py-2 text-sm text-gray-800">{{ $cost['service'] }}</td>
                                         <td class="border border-gray-300 px-4 py-2 text-sm text-gray-800">{{ $cost['description'] }}</td>
-                                        <td class="border border-gray-300 px-4 py-2 text-sm text-gray-800">{{ number_format($cost['cost'][0]['value'], 0, ',', '.') }}</td>
+                                        <td class="border border-gray-300 px-4 py-2 text-sm text-gray-800">{{ number_format(max(0, $cost['cost'][0]['value'] - 20000), 0, ',', '.') }}</td>
                                         <td class="border border-gray-300 px-4 py-2 text-sm text-gray-800">{{ $cost['cost'][0]['etd'] }}</td>
                                     </tr>
                                 @endforeach
@@ -36,6 +36,7 @@
                 <a href="{{ route('checkout.index') }}" class="py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
                     Kembali
                 </a>
+                &nbsp;
                 <a href="{{ route('checkout.form') }}" class="py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
                     Lanjut ke Checkout
                 </a>

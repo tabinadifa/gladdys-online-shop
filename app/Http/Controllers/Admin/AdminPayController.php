@@ -38,11 +38,11 @@ class AdminPayController extends Controller
         if ($request->hasFile('gambar_qris')) {
             $image = $request->file('gambar_qris');
             
-            // Tentukan path penyimpanan gambar di folder public
+            // Tentukan path penyimpanan gambar di folder qris_img
             $imagePath = 'dashboard-template/qris_img/' . $image->getClientOriginalName();
             
-            // Pindahkan gambar ke folder public
-            $image->move(public_path('dashboard-template/qris_img'), $image->getClientOriginalName());
+            // Pindahkan gambar ke folder qris_img
+            $image->move(base_path('dashboard-template/qris_img'), $image->getClientOriginalName());
     
             // Simpan nama gambar untuk disimpan di database
             $imageUrl = $imagePath;
@@ -87,11 +87,11 @@ class AdminPayController extends Controller
         if ($request->hasFile('gambar_qris')) {
             $image = $request->file('gambar_qris');
             
-            // Tentukan path penyimpanan gambar di folder public
+            // Tentukan path penyimpanan gambar di folder qris_img
             $imagePath = 'dashboard-template/qris_img/' . $image->getClientOriginalName();
             
-            // Pindahkan gambar ke folder public
-            $image->move(public_path('dashboard-template/qris_img'), $image->getClientOriginalName());
+            // Pindahkan gambar ke folder qris_img
+            $image->move(base_path('dashboard-template/qris_img'), $image->getClientOriginalName());
     
             // Simpan nama gambar untuk disimpan di database
             $imageUrl = $imagePath;
@@ -114,8 +114,8 @@ class AdminPayController extends Controller
      */
     public function destroy(Payment $payment)
     {
-        if ($payment->gambar_qris && file_exists(public_path($payment->gambar_qris))) {
-            unlink(public_path($payment->gambar_qris));
+        if ($payment->gambar_qris && file_exists(base_path($payment->gambar_qris))) {
+            unlink(base_path($payment->gambar_qris));
         }
     
         // Hapus produk dari database

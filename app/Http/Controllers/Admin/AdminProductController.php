@@ -33,49 +33,48 @@ class AdminProductController extends Controller
      */
     public function store(Request $request)
     {
-            // Validasi data
-            $validated = $request->validate([
-                'nama_produk' => 'required|string|max:255',
-                'kategori_produk' => 'required|string|max:255',
-                'berat_produk' => 'required|numeric',
-                'deskripsi_produk' => 'nullable|string',
-                'harga_produk' => 'required|numeric',
-                'gambar_produk' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048', // Validasi gambar
-            ]);
-        
-            // Proses gambar jika ada
-            if ($request->hasFile('gambar_produk')) {
-                $image = $request->file('gambar_produk');
-                
-                // Tentukan path penyimpanan gambar di folder public
-                $imagePath = 'dashboard-template/products_img/' . $image->getClientOriginalName();
-                
-                // Pindahkan gambar ke folder public
-                $image->move(public_path('dashboard-template/products_img'), $image->getClientOriginalName());
-        
-                // Simpan nama gambar untuk disimpan di database
-                $imageUrl = $imagePath;
-            } else {
-                $imageUrl = null;
-            }
-        
-            // Simpan data produk ke database
-            Product::create([
-                'nama_produk' => $validated['nama_produk'],
-                'kategori_produk' => $validated['kategori_produk'],
-                'berat_produk' => $validated['berat_produk'],
-                'deskripsi_produk' => $validated['deskripsi_produk'],
-                'harga_produk' => $validated['harga_produk'],
-                'gambar_produk' => $imageUrl, // Simpan path gambar
-            ]);
+        // Validasi data
+        $validated = $request->validate([
+            'nama_produk' => 'required|string|max:255',
+            'kategori_produk' => 'required|string|max:255',
+            'berat_produk' => 'required|numeric',
+            'deskripsi_produk' => 'nullable|string',
+            'harga_produk' => 'required|numeric',
+            'diskon' => 'nullable|numeric|min:0|max:1', // Diskon dalam bentuk desimal (0.1 = 10%)
+            'gambar_produk' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+        ]);
 
-            session()->flash('success', 'Produk berhasil ditambah!');
-        
-            // Redirect atau beri respon sesuai kebutuhan
-            return redirect()->route('products.index');
+        // Proses gambar jika ada
+        $imageUrl = null;
+        if ($request->hasFile('gambar_produk')) {
+            $image = $request->file('gambar_produk');
+            $imagePath = 'dashboard-template/products_img/' . $image->getClientOriginalName();
+            $image->move(base_path('dashboard-template/products_img'), $image->getClientOriginalName());
+            $imageUrl = $imagePath;
         }
-        
-    public function show(Product $product) 
+
+        // Hitung harga_final
+        $diskon = $validated['diskon'] ?? 0;
+        $harga_final = $validated['harga_produk'] - ($validated['harga_produk'] * $diskon);
+
+        // Simpan data produk ke database
+        Product::create([
+            'nama_produk' => $validated['nama_produk'],
+            'kategori_produk' => $validated['kategori_produk'],
+            'berat_produk' => $validated['berat_produk'],
+            'deskripsi_produk' => $validated['deskripsi_produk'],
+            'harga_produk' => $validated['harga_produk'],
+            'diskon' => $diskon,
+            'harga_final' => $harga_final,
+            'gambar_produk' => $imageUrl,
+        ]);
+
+        session()->flash('success', 'Produk berhasil ditambah!');
+
+        return redirect()->route('products.index');
+    }
+
+    public function show(Product $product)
     {
         return view('admin.products.show', compact('product'));
     }
@@ -86,68 +85,65 @@ class AdminProductController extends Controller
     public function edit(Product $product)
     {
         $category = Category::all();
-        // Kembalikan view edit dengan data produk
         return view('admin.products.edit', compact('product', 'category'));
     }
 
-public function update(Request $request, Product $product)
-{
-    // Validasi data
-    $validated = $request->validate([
-        'nama_produk' => 'required|string|max:255',
-        'kategori_produk' => 'required|string|max:255',
-        'berat_produk' => 'required|numeric',
-        'deskripsi_produk' => 'nullable|string',
-        'harga_produk' => 'required|numeric',
-        'gambar_produk' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
-    ]);
+    public function update(Request $request, Product $product)
+    {
+        // Validasi data
+        $validated = $request->validate([
+            'nama_produk' => 'required|string|max:255',
+            'kategori_produk' => 'required|string|max:255',
+            'berat_produk' => 'required|numeric',
+            'deskripsi_produk' => 'nullable|string',
+            'harga_produk' => 'required|numeric',
+            'diskon' => 'nullable|numeric|min:0|max:1',
+            'gambar_produk' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+        ]);
 
-    // Proses gambar jika ada
-    if ($request->hasFile('gambar_produk')) {
-        // Hapus gambar lama jika ada
-        if ($product->gambar_produk && file_exists(public_path($product->gambar_produk))) {
-            unlink(public_path($product->gambar_produk));
+        // Proses gambar jika ada
+        if ($request->hasFile('gambar_produk')) {
+            if ($product->gambar_produk && file_exists(base_path($product->gambar_produk))) {
+                unlink(base_path($product->gambar_produk));
+            }
+            $file = $request->file('gambar_produk');
+            $fileName = time() . '_' . $file->getClientOriginalName(); // Membuat nama unik
+            $destinationPath = base_path('dashboard-template/img'); // Path folder tujuan
+            $file->move($destinationPath, $fileName); // Memindahkan file
+            $imageUrl = 'dashboard-template/img/' . $fileName; // Menyimpan path relatif
+        } else {
+            $imageUrl = $product->gambar_produk;
         }
 
-        // Simpan gambar baru
-        $imagePath = $request->file('gambar_produk')->store('products_img', 'public');
-        $imageUrl = 'storage/' . $imagePath;
-    } else {
-        // Jika tidak ada gambar baru, gunakan gambar lama
-        $imageUrl = $product->gambar_produk;
+        // Hitung harga_final
+        $diskon = $validated['diskon'] ?? $product->diskon;
+        $harga_final = $validated['harga_produk'] - ($validated['harga_produk'] * $diskon);
+
+        // Update data produk di database
+        $product->update([
+            'nama_produk' => $validated['nama_produk'],
+            'kategori_produk' => $validated['kategori_produk'],
+            'berat_produk' => $validated['berat_produk'],
+            'deskripsi_produk' => $validated['deskripsi_produk'],
+            'harga_produk' => $validated['harga_produk'],
+            'diskon' => $diskon,
+            'harga_final' => $harga_final,
+            'gambar_produk' => $imageUrl,
+        ]);
+
+        session()->flash('success', 'Produk berhasil diubah!');
+
+        return redirect()->route('products.index');
     }
-
-    // Update data produk di database
-    $product->update([
-        'nama_produk' => $validated['nama_produk'],
-        'kategori_produk' => $validated['kategori_produk'],
-        'berat_produk' => $validated['berat_produk'],
-        'deskripsi_produk' => $validated['deskripsi_produk'],
-        'harga_produk' => $validated['harga_produk'],
-        'gambar_produk' => $imageUrl,
-    ]);
-
-    // Set pesan sukses
-    session()->flash('success', 'Produk berhasil diubah!');
-
-    // Redirect ke halaman index produk
-    return redirect()->route('products.index');
-}
-
-
 
     /**
      * Menghapus produk dari database.
      */
     public function destroy(Product $product)
     {
-
-        // Hapus gambar jika bukan gambar default
-        if ($product->gambar_produk && file_exists(public_path($product->gambar_produk))) {
-            unlink(public_path($product->gambar_produk));
+        if ($product->gambar_produk && file_exists(base_path($product->gambar_produk))) {
+            unlink(base_path($product->gambar_produk));
         }
-
-        // Hapus produk dari database
         $product->delete();
 
         session()->flash('success', 'Produk berhasil dihapus!');

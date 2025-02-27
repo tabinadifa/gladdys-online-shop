@@ -14,6 +14,10 @@
         <td>{{ $product->berat_produk }} gram</td>
     </tr>
     <tr>
+        <th>Diskon</th>
+        <td>{{ $product->diskon ? ($product->diskon * 100) . '%' : '0%' }}</td>
+    </tr>
+    <tr>
         <th>Harga Produk</th>
         <td>Rp {{ number_format($product->harga_produk, 0, ',', '.') }}</td>
     </tr>

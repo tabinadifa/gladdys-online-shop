@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('courier');
             $table->decimal('total_price', 10, 2);
             $table->json('cart_items'); 
-            $table->enum('status', ['rejected', 'pending', 'process', 'delivered'])->default('pending');
+            $table->enum('status', ['cancelled', 'pending', 'process', 'delivered'])->default('pending');
             $table->string('shipping_status')->default('Belum dikirim');
             $table->timestamps();
 

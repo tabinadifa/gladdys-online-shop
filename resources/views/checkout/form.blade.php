@@ -46,8 +46,11 @@
                         <option value="">Pilih Ongkir</option>
                         @foreach ($results['rajaongkir']['results'] as $courier)
                             @foreach ($courier['costs'] as $cost)
-                                <option value="{{ $cost['cost'][0]['value'] }}">
-                                    {{ $courier['name'] }} - {{ $cost['service'] }} (Rp {{ number_format($cost['cost'][0]['value'], 0, ',', '.') }})
+                                @php
+                                    $discounted_cost = max(0, $cost['cost'][0]['value'] - 20000);
+                                @endphp
+                                <option value="{{ $discounted_cost }}">
+                                    {{ $courier['name'] }} - {{ $cost['service'] }} (Rp {{ number_format($discounted_cost, 0, ',', '.') }})
                                 </option>
                             @endforeach
                         @endforeach
@@ -55,13 +58,13 @@
                 </div>
 
                 <!-- QRIS -->
-                 <br>
-                 <h3>Mohon lakukan pembayaran melalui QRIS di bawah ini:</h3>
-                 @foreach ($payment as $row)
-                <img src="{{ asset($row->gambar_qris) }}" alt="Gambar Produk" 
-                    class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover; cursor: pointer;" 
-                    onclick="openImage('{{ asset($row->gambar_qris) }}')">
-                    @endforeach
+                <br>
+                <h3>Mohon lakukan pembayaran melalui QRIS di bawah ini:</h3>
+                @foreach ($payment as $row)
+                    <img src="{{ asset($row->gambar_qris) }}" alt="Gambar Produk" 
+                        class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover; cursor: pointer;" 
+                        onclick="openImage('{{ asset($row->gambar_qris) }}')">
+                @endforeach
 
                 <!-- Payment Screenshot -->
                 <div class="form-group">

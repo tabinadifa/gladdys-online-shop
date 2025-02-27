@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('kategori_produk');
             $table->text('deskripsi_produk');
             $table->decimal('harga_produk', 15, 2); // Sesuaikan skala sesuai kebutuhan
+            $table->decimal('diskon', 15, 2);
+            $table->decimal('harga_final', 15, 2);
             $table->string('gambar_produk')->default('dashboard-template/products_img/default.png');
             $table->timestamps();
         });

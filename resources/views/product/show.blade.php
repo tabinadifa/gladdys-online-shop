@@ -23,10 +23,10 @@
             <!-- Detail Produk -->
             <div>
                 <h1 class="text-3xl font-bold text-gray-900">{{ $product->nama_produk }}</h1>
-                <p class="mt-2 text-lg text-gray-700">Rp {{ number_format($product->harga_produk, 0, ',', '.') }}</p>
+                <p class="mt-2 text-lg text-gray-700">Rp {{ number_format($product->harga_final, 0, ',', '.') }}</p>
                 <p class="mt-4 text-gray-600">{{ $product->deskripsi_produk }}</p>
 
-                <form class="mt-6">
+                <form class="mt-6" action="{{ route('cart.add', $product->id_produk) }}">
                     <button class="w-full md:w-auto rounded bg-yellow-400 px-6 py-3 text-sm font-medium text-white hover:bg-yellow-500 focus:outline-none focus:ring">
                         Tambah ke Keranjang
                     </button>

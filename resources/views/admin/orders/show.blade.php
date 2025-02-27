@@ -25,10 +25,10 @@
         <th>Status</th>
         <td>
             <span class="badge 
-                {{ $row->status == 'pending' ? 'bg-warning' : 
-                        ($row->status == 'rejected' ? 'bg-danger' : 
-                        ($row->status == 'process' ? 'bg-info' : 'bg-success')) }}">
-                    {{ ucfirst($row->status) }}
+                {{ $order->status == 'pending' ? 'bg-warning' : 
+                        ($order->status == 'rejected' ? 'bg-danger' : 
+                        ($order->status == 'process' ? 'bg-info' : 'bg-success')) }}">
+                    {{ ucfirst($order->status) }}
             </span>
         </td>
     </tr>
@@ -55,7 +55,7 @@
             @foreach (json_decode($order->cart_items, true) as $item)
                 <div class="mb-2">
                     <strong>{{ $item['nama_produk'] }}</strong> - 
-                    {{ $item['jumlah'] }} x Rp {{ number_format($item['harga_produk'], 0, ',', '.') }}<br>
+                    {{ $item['jumlah'] }} x Rp {{ number_format($item['harga_final'], 0, ',', '.') }}<br>
                 </div>
             @endforeach
         </td>
